@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# bin/compile BUILD_DIR CACHE_DIR ENV_DIR
+
+echo_header() {
+  echo "-----> $1"
+}
+echo_indented() {
+  echo "       $1"
+}
+
+## Fail immediately on non-zero exit code.
+set -e
+## Fail immediately on non-zero exit code within a pipeline.
+set -o pipefail
+
+BUILD_DIR=$1
+
+echo_header "Generating secure random key string..."
+
+SECURE_KEY_STR="$( openssl rand -base64 60 | tr -dc 'A-Za-z0-9' | head -c 32 )"
+
+echo_indented "SECURE_KEY_STR: $SECURE_KEY_STR"
+
+PROFILE_PATH="$BUILD_DIR/.profile.d/SECURE_KEY_STR.sh"
+
+mkdir -p $(dirname $PROFILE_PATH)
+echo "export SECURE_KEY_STR=\${SECURE_KEY_STR:-$SECURE_KEY_STR}" >> $PROFILE_PATH
+
+echo_indented "Script installed to .profile.d/SECURE_KEY_STR.sh"
+echo_indented "DONE"
