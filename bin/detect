@@ -1,4 +1,4 @@
 #!/bin/bash
 
-echo "heroku-buildpack-securekey"
+echo "Secure key"
 exit 0
